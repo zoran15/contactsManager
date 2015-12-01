@@ -1,0 +1,168 @@
+<!doctype html>
+<html ng-app="contactsApp">
+<head>
+<title>Contacts</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+<script src="/js/contacts.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+	integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+
+<body>
+	<div class="row-fluid" ng-controller="ContactsCtrl">
+		<h2>
+			<p class="text-center">Contacts Manager</p>
+		</h2>
+
+		<div
+			ng-class="{'alert alert-block alert-error': state == 'error', 'none': state != 'error'}">
+			<h4>Generic error</h4>
+			<br />
+			<p>A generic error has occurred.</p>
+		</div>
+
+		<div
+			ng-class="{'alert alert-info': state == 'noresult', 'none': state != 'noresult'}">
+			<h4>Contacts list empty</h4>
+			<br />
+			<p>Create contacts by clicking 'Create Contact' button.</p>
+		</div>
+
+		<div id="gridContainer"
+			ng-class="{'': state == 'list', 'none': state != 'list'}">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">E-Mail</th>
+						<th scope="col">Phone</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="contact in page.source">
+						<td class="tdContactsCentered">{{contact.name}}</td>
+						<td class="tdContactsCentered">{{contact.email}}</td>
+						<td class="tdContactsCentered">{{contact.phoneNumber}}</td>
+						<td class="width15">
+							<div class="text-center">
+								<input type="hidden" value="{{contact.id}}" /> <a
+									href="#deleteContactsModal"
+									ng-click="selectedContact(contact);" role="button"
+									title="Delete Contact"
+									class="btn btn-inverse glyphicon glyphicon-remove"
+									data-toggle="modal"> </a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+		<div class='text-center'>
+			<br /> <a href="#addContactsModal" role="button"
+				ng-click="resetContact();" title="Create contact"
+				class="btn btn-inverse glyphicon glyphicon-plus" data-toggle="modal">Create Contact</a>
+		</div>
+
+		<div id="addContactsModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 id="addContactsModalLabel" class="displayInLine">Create Contact</h3>
+					</div>
+					<div class="modal-body">
+						<form name="newContactForm" novalidate>
+							<div>
+								<div class="input-append">
+									<label>* Name:</label>
+								</div>
+								<div class="input-append">
+									<input type="text" required autofocus ng-model="contact.name"
+										name="name" placeholder="Contact name" />
+								</div>
+								<div class="input-append">
+									<label> 
+										<span class="alert alert-error" ng-show="displayValidationError && newContactForm.name.$error.required">
+											Required
+										</span>
+									</label>
+								</div>
+							</div>
+							<div>
+								<div class="input-append">
+									<label>* E-Mail:</label>
+								</div>
+								<div class="input-append">
+									<input type="text" required ng-model="contact.email"
+										name="email" placeholder="E-Mail " />
+								</div>
+								<div class="input-append">
+									<label> <span class="alert alert-error"
+										ng-show="displayValidationError && newContactForm.email.$error.required">
+											Required</span>
+									</label>
+								</div>
+							</div>
+							<div>
+								<div class="input-append">
+									<label>* Phone:</label>
+								</div>
+								<div class="input-append">
+									<input type="text" required ng-model="contact.phoneNumber"
+										name="phoneNumber" placeholder="" />
+								</div>
+								<div class="input-append">
+									<label> <span class="alert alert-error"
+										ng-show="displayValidationError && newContactForm.phoneNumber.$error.required">
+											Required </span>
+									</label>
+								</div>
+							</div>
+						</form>
+
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btn btn-inverse"
+							ng-click="createContact(newContactForm);" value='Create' />
+						<button class="btn btn-inverse" data-dismiss="modal"
+							ng-click="exit('#addContactsModal');" aria-hidden="true">Cancel</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="deleteContactsModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 id="deleteContactsModalLabel" class="displayInLine">Delete contact</h3>
+					</div>
+					<div class="modal-body">
+						<form name="deleteContactForm" novalidate>
+							<p>Are you sure you want to remove:&nbsp;{{contact.name}}?</p>
+
+							<input type="submit" class="btn btn-inverse"
+								ng-click="deleteContact();" value='Delete' />
+							<button class="btn btn-inverse" data-dismiss="modal"
+								ng-click="exit('#deleteContactsModal');" aria-hidden="true">
+								Cancel</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>
